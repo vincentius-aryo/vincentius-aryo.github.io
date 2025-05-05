@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIMRS Care – Pasien</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<style>body { font-family: 'Poppins', sans-serif; }</style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<nav class="bg-blue-600 p-4">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<div class="flex gap-4 ml-8">
+<a class="text-white hover:underline" href="beranda.html">Beranda</a>
+<a class="text-white underline font-semibold" href="pasien.html">Buat Janji</a>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="text-white" id="userRole"></div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</div>
+</nav>
+<div class="p-6">
+<div class="flex justify-end mb-4">
+<button class="bg-blue-600 text-white px-4 py-2 rounded-lg" id="buatJanjiBtn">+ Buat Janji Dokter</button>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-md">
+<h2 class="text-xl font-semibold mb-4">Daftar Janji</h2>
+<table class="min-w-full text-sm" id="tabelJanji">
+<thead>
+<tr class="bg-gray-200">
+<th class="px-4 py-2">Nama</th>
+<th class="px-4 py-2">NIK/BPJS</th>
+<th class="px-4 py-2">Tanggal</th>
+<th class="px-4 py-2">Poli</th>
+<th class="px-4 py-2">Slot</th>
+<th class="px-4 py-2">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100" id="janjiBody"></tbody>
+</table>
+</div>
+</div>
+<!-- Modal Buat Janji -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="modalJanji">
+<div class="bg-white p-6 rounded-lg w-[500px]">
+<h3 class="text-xl font-semibold mb-4">Buat Janji Dokter</h3>
+<form class="space-y-4" id="formJanji">
+<input class="w-full border px-3 py-2 rounded" id="namaPasien" placeholder="Nama Pasien" required="" type="text"/>
+<input class="w-full border px-3 py-2 rounded" id="nikPasien" placeholder="NIK / No. BPJS" required="" type="text"/>
+<input class="w-full border px-3 py-2 rounded" id="tanggalJanji" required="" type="date"/>
+<select class="w-full border px-3 py-2 rounded" id="poliJanji" required="">
+<option value="">Pilih Poli</option>
+<option>Poli Umum</option>
+<option>Poli Anak</option>
+<option>Poli Gigi</option>
+</select>
+<select class="w-full border px-3 py-2 rounded" id="slotJanji" required="">
+<option value="">Pilih Slot Waktu</option>
+<option>08:00 - 10:00</option>
+<option>10:00 - 12:00</option>
+<option>13:00 - 15:00</option>
+</select>
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2" id="batalJanji" type="button">Batal</button>
+<button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Konfirmasi Janji</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+    const namaEl = document.getElementById('namaPasien');
+    const nikEl = document.getElementById('nikPasien');
+    const tanggalEl = document.getElementById('tanggalJanji');
+    const poliEl = document.getElementById('poliJanji');
+    const slotEl = document.getElementById('slotJanji');
+    const tbody = document.getElementById('janjiBody');
+
+    document.getElementById('buatJanjiBtn').addEventListener('click', () => {
+      document.getElementById('modalJanji').classList.remove('hidden');
+    });
+    document.getElementById('batalJanji').addEventListener('click', () => {
+      document.getElementById('modalJanji').classList.add('hidden');
+    });
+
+    document.getElementById('formJanji').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const janji = {
+        nama: namaEl.value,
+        nik: nikEl.value,
+        tanggal: tanggalEl.value,
+        poli: poliEl.value,
+        slot: slotEl.value,
+        status: 'Belum Dikonfirmasi'
+      };
+      const all = JSON.parse(localStorage.getItem('daftarJanji') || '[]');
+      all.push(janji);
+      localStorage.setItem('daftarJanji', JSON.stringify(all));
+      alert('✅ Janji berhasil dibuat! Notifikasi telah dikirim ke dokter.');
+      document.getElementById('modalJanji').classList.add('hidden');
+      loadJanji();
+    });
+
+    function loadJanji() {
+      tbody.innerHTML = '';
+      const daftar = JSON.parse(localStorage.getItem('daftarJanji') || '[]');
+      daftar.forEach(j => {
+        const row = `<tr>
+          <td class="px-4 py-2">${j.nama}</td>
+          <td class="px-4 py-2">${j.nik}</td>
+          <td class="px-4 py-2">${j.tanggal}</td>
+          <td class="px-4 py-2">${j.poli}</td>
+          <td class="px-4 py-2">${j.slot}</td>
+          <td class="px-4 py-2">
+            ${j.status === 'Terkonfirmasi' ? '<span class="text-green-600 font-semibold">Terkonfirmasi</span>' : '<span class="text-yellow-600 font-semibold">Menunggu Konfirmasi</span>'}
+          </td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('simrsRole');
+      window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadJanji);
+  </script>
+<script src="common.js"></script>
+</body>
+</html>

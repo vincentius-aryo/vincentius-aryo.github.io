@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Laporan Approval Manajemen</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>body { font-family: 'Poppins', sans-serif; }</style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<nav class="bg-blue-600 p-4">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<div class="flex gap-4 ml-8">
+<a class="text-white hover:underline" href="dashboard-rekam.html">Dashboard</a>
+<a class="text-white hover:underline" href="rekam-medis.html">Rekam Medis</a>
+<a class="text-white hover:underline" href="klaim-rekam.html">Klaim BPJS</a>
+<a class="text-white underline font-semibold" href="laporan-rekam.html">Laporan</a>
+</div>
+</div>
+<div class="flex gap-4 items-center"><div class="text-white" id="userRole"></div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</div>
+</nav>
+<div class="p-6">
+<h2 class="text-xl font-semibold mb-4">Daftar Laporan Klaim BPJS (Mingguan)</h2>
+<div class="bg-white p-6 rounded-xl shadow-md">
+<table class="min-w-full text-sm">
+<thead class="bg-gray-200">
+<tr>
+<th class="px-4 py-2">Laporan</th>
+<th class="px-4 py-2">Status</th>
+<th class="px-4 py-2">Aksi</th>
+</tr>
+</thead>
+<tbody id="laporanBody"></tbody>
+</table>
+</div>
+</div>
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="modalReview">
+<div class="bg-white p-6 rounded-xl w-[400px]">
+<h3 class="text-lg font-bold mb-2">Detail Laporan</h3>
+<div class="mb-4 text-sm" id="detailReview"></div>
+<div class="mt-4 flex justify-end">
+<button class="px-4 py-2" onclick="closeReview()">Tutup</button>
+<button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="simulasiDownload()">Unduh PDF</button>
+</div>
+</div>
+</div>
+<script>
+    let laporanList = [
+      { id: 1, judul: "Klaim BPJS Pasien A - Minggu ke-1", status: "Tersedia" },
+      { id: 2, judul: "Klaim BPJS Pasien B - Minggu ke-2", status: "Tersedia" }
+    ];
+    let indexTerpilih = null;
+
+    function loadLaporan() {
+      const tbody = document.getElementById('laporanBody');
+      tbody.innerHTML = '';
+      laporanList.forEach((item, i) => {
+        const row = `<tr>
+          <td class='px-4 py-2'>${item.judul}</td>
+          <td class='px-4 py-2'>${item.status}</td>
+          <td class='px-4 py-2'><button onclick="openReview(${i})" class="text-blue-600 underline">Lihat</button></td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    function openReview(i) {
+      indexTerpilih = i;
+      const item = laporanList[i];
+      document.getElementById('detailReview').innerText = `Judul: ${item.judul}\nStatus: ${item.status}`;
+      document.getElementById('modalReview').classList.remove('hidden');
+    }
+
+    function closeReview() {
+      document.getElementById('modalReview').classList.add('hidden');
+    }
+
+    function simulasiDownload() {
+      const item = laporanList[indexTerpilih];
+      alert(`📄 File PDF "${item.judul}" berhasil diunduh.`);
+      closeReview();
+    }
+
+    function logout() {
+      localStorage.removeItem('simrsRole');
+      window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadLaporan);
+  </script>
+<script src="common.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kelola Stok Obat</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<style>body { font-family: 'Poppins', sans-serif; }</style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<nav class="bg-blue-600 p-4">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<div class="flex gap-4 ml-8">
+<a class="text-white hover:underline" href="dashboard-farmasi.html">Dashboard</a>
+<a class="text-white hover:underline" href="farmasi.html">Farmasi</a>
+<a class="text-white underline font-semibold" href="stok-obat.html">Kelola Stok</a>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="text-white" id="userRole">Login Sebagai: Farmasi</div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</div>
+</nav>
+<div class="p-6">
+<h2 class="text-xl font-semibold mb-4">Kelola Stok Obat</h2>
+<div class="bg-white p-4 rounded shadow mb-6">
+<h3 class="font-semibold mb-2">Tambah/Ubah Obat</h3>
+<form class="flex flex-col md:flex-row gap-4" id="obatForm">
+<input class="border px-4 py-2 rounded w-full md:w-1/3" id="namaObat" placeholder="Nama Obat" type="text"/>
+<input class="border px-4 py-2 rounded w-full md:w-1/3" id="jumlahStok" placeholder="Jumlah Stok" type="number"/>
+<button class="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Simpan</button>
+</form>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full bg-white rounded-xl shadow-md text-sm">
+<thead class="bg-gray-200">
+<tr>
+<th class="px-4 py-2">Nama Obat</th>
+<th class="px-4 py-2">Stok Tersedia</th>
+<th class="px-4 py-2">Aksi</th>
+</tr>
+</thead>
+<tbody id="stokBody"></tbody>
+</table>
+</div>
+</div>
+<script>
+    function getStokList() {
+      return JSON.parse(localStorage.getItem('stokList') || '[]');
+    }
+
+    function setStokList(list) {
+      localStorage.setItem('stokList', JSON.stringify(list));
+    }
+
+    function renderStok() {
+      const stokList = getStokList();
+      const tbody = document.getElementById('stokBody');
+      tbody.innerHTML = '';
+      stokList.forEach((obat, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="px-4 py-2">${obat.nama}</td>
+            <td class="px-4 py-2">${obat.stok}</td>
+            <td class="px-4 py-2">
+              <button onclick="editObat(${i})" class="text-yellow-600 underline">Edit</button> |
+              <button onclick="hapusObat(${i})" class="text-red-600 underline">Hapus</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function editObat(index) {
+      const stokList = getStokList();
+      document.getElementById('namaObat').value = stokList[index].nama;
+      document.getElementById('jumlahStok').value = stokList[index].stok;
+      document.getElementById('obatForm').dataset.editIndex = index;
+    }
+
+    function hapusObat(index) {
+      const stokList = getStokList();
+      stokList.splice(index, 1);
+      setStokList(stokList);
+      renderStok();
+    }
+
+    document.getElementById('obatForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const stokList = getStokList();
+      const nama = document.getElementById('namaObat').value;
+      const jumlah = parseInt(document.getElementById('jumlahStok').value, 10);
+
+      const index = this.dataset.editIndex;
+      if (index !== undefined) {
+        stokList[index] = { nama, stok: jumlah };
+        delete this.dataset.editIndex;
+      } else {
+        stokList.push({ nama, stok: jumlah });
+      }
+
+      setStokList(stokList);
+      this.reset();
+      renderStok();
+    });
+
+    document.addEventListener('DOMContentLoaded', renderStok);
+  </script>
+<script>
+    function logout() {
+      localStorage.removeItem('simrsRole');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('addBtn')?.addEventListener('click', () => {
+      document.getElementById('modalAdd').classList.remove('hidden');
+    });
+    document.getElementById('cancelAdd')?.addEventListener('click', () => {
+      document.getElementById('modalAdd').classList.add('hidden');
+    });
+    document.getElementById('formAdd')?.addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Dashboard ditambahkan! (simulasi)');
+      document.getElementById('modalAdd').classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

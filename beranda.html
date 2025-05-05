@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beranda - SIMRS Care</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+    * {
+      font-family: 'Poppins', sans-serif !important;
+    }
+  </style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100 font-sans"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<!-- Navbar -->
+<nav class="bg-blue-600 text-white">
+<div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+<div class="flex items-center gap-8">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<a class="text-white underline font-semibold" href="beranda.html">Beranda</a>
+<a class="text-white hover:underline" href="pasien.html">Buat Janji</a>
+</div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="bg-blue-50 py-12">
+<div class="max-w-5xl mx-auto px-6 text-center">
+<h1 class="text-3xl md:text-4xl font-bold text-blue-800 mb-4">Selamat Datang di SIMRS Care</h1>
+<p class="text-gray-700 text-lg">Portal layanan informasi dan manajemen rumah sakit modern, dirancang untuk kemudahan Anda.</p>
+<div class="my-6">
+<img alt="Header Page SIMRS" class="w-full h-auto shadow-md" src="header-page.jpg"/>
+</div>
+</div>
+</section>
+<!-- Daftar Dokter -->
+<section class="max-w-6xl mx-auto px-6 mt-16">
+<h2 class="text-2xl font-semibold text-gray-800 mb-6">Dokter Kami</h2>
+<div class="grid md:grid-cols-3 gap-6">
+<div class="bg-white rounded-lg shadow p-4 text-center">
+<img alt="Dr. Maria" class="mx-auto rounded-full w-24 h-24 object-cover mb-4" src="dokter-1.jpg"/>
+<h3 class="font-semibold text-lg text-blue-700">dr. Maria Yosephine</h3>
+<p class="text-gray-600 text-sm">Spesialis Penyakit Dalam</p>
+</div>
+<div class="bg-white rounded-lg shadow p-4 text-center">
+<img alt="Dr. Andi" class="mx-auto rounded-full w-24 h-24 object-cover mb-4" src="dokter-2.jpg"/>
+<h3 class="font-semibold text-lg text-blue-700">dr. Andi Saputra</h3>
+<p class="text-gray-600 text-sm">Dokter Umum</p>
+</div>
+<div class="bg-white rounded-lg shadow p-4 text-center">
+<img alt="Dr. Olivia" class="mx-auto rounded-full w-24 h-24 object-cover mb-4" src="dokter-3.jpg"/>
+<h3 class="font-semibold text-lg text-blue-700">dr. Olivia Hartono</h3>
+<p class="text-gray-600 text-sm">Spesialis Anak</p>
+</div>
+</div>
+</section>
+<!-- Content Cards -->
+<section class="max-w-6xl mx-auto px-6 mt-10 grid md:grid-cols-2 gap-6">
+<div class="bg-white rounded-lg shadow p-6">
+<h2 class="text-xl font-semibold mb-2">Layanan</h2>
+<ul class="list-disc list-inside text-gray-700">
+<li>Layanan Dokter Umum 24 Jam</li>
+<li>Buat Janji Online</li>
+<li>Melayani BPJS dan Asuransi Lain</li>
+</ul>
+</div>
+<div class="bg-white rounded-lg shadow p-6">
+<h2 class="text-xl font-semibold mb-2">Kontak &amp; Bantuan</h2>
+<p class="text-gray-700 mb-2">Silakan hubungi kami jika butuh bantuan:</p>
+<p>📞 021-12345678</p>
+<p>📧 cs@simrscare.id</p>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-16 py-6 bg-gray-200 text-center text-sm text-gray-600">
+    © 2025 SIMRS Care. Semua Hak Dilindungi.
+  </footer>
+<script>
+    function logout() {
+  window.location.href = 'index.html';
+}
+  </script>
+</body>
+</html>

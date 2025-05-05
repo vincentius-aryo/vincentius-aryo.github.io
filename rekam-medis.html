@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIMRS Care – Rekam Medis</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<style>body { font-family: 'Poppins', sans-serif; }</style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<nav class="bg-blue-600 p-4">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<div class="flex gap-4 ml-8">
+<a class="text-white hover:underline" href="dashboard-rekam.html">Dashboard</a>
+<a class="text-white underline font-semibold" href="rekam-medis.html">Rekam Medis</a>
+<a class="text-white hover:underline" href="klaim-rekam.html">Klaim BPJS</a>
+<!-- <a href="laporan-rekam.html" class="text-white hover:underline">Laporan</a> -->
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="text-white" id="userRole"></div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</div>
+</nav>
+<div class="p-6">
+<h2 class="text-xl font-semibold mb-4">Data Rekam Medis</h2>
+<div class="bg-white p-6 rounded-xl shadow-md">
+<table class="min-w-full text-sm">
+<thead>
+<tr class="bg-gray-200">
+<th class="px-4 py-2">Nama</th>
+<th class="px-4 py-2">NIK / No. RM</th>
+<th class="px-4 py-2">Tanggal</th>
+<th class="px-4 py-2">Diagnosa</th>
+<th class="px-4 py-2">Resep</th>
+<th class="px-4 py-2">Status Verifikasi ICD</th>
+<th class="px-4 py-2">Kode ICD</th>
+<th class="px-4 py-2">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100" id="rekamMedisBody"></tbody>
+</table>
+</div>
+</div>
+<script>
+    const icdList = ['A00', 'A01', 'B20', 'J18.9', 'K35', 'E11', 'N39.0'];
+
+    function loadRekamMedis() {
+      const data = JSON.parse(localStorage.getItem('rekamMedisList') || '[]');
+      const tbody = document.getElementById('rekamMedisBody');
+      tbody.innerHTML = '';
+
+      data.forEach((item, index) => {
+        if (!item.kodeICD) {
+          item.kodeICD = icdList[Math.floor(Math.random() * icdList.length)];
+        }
+        if (!item.verifikasiICD) {
+          item.verifikasiICD = 'Belum Diverifikasi';
+        }
+
+        const readonly = item.verifikasiICD === 'Terverifikasi' ? 'readonly disabled' : '';
+        const btnDisabled = item.verifikasiICD === 'Terverifikasi' ? 'hidden' : '';
+
+        const row = `<tr>
+          <td class="px-4 py-2">${item.nama}</td>
+          <td class="px-4 py-2">${item.nik}</td>
+          <td class="px-4 py-2">${item.tanggal}</td>
+          <td class="px-4 py-2">${item.diagnosa}</td>
+          <td class="px-4 py-2">${item.resep}</td>
+          <td class="px-4 py-2">${item.verifikasiICD}</td>
+          <td class="px-4 py-2">
+            <input type="text" id="icd-${index}" value="${item.kodeICD}" class="border px-2 py-1 rounded w-24" ${readonly} />
+          </td>
+          <td class="px-4 py-2">
+            <button onclick="verifikasiICD(${index})" class="bg-green-600 text-white px-3 py-1 rounded ${btnDisabled}">Verifikasi</button>
+          </td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+      });
+
+      localStorage.setItem('rekamMedisList', JSON.stringify(data));
+    }
+
+    function verifikasiICD(index) {
+      const data = JSON.parse(localStorage.getItem('rekamMedisList') || '[]');
+      const newCode = document.getElementById(`icd-${index}`).value.trim();
+      data[index].kodeICD = newCode;
+      data[index].verifikasiICD = 'Terverifikasi';
+      localStorage.setItem('rekamMedisList', JSON.stringify(data));
+      loadRekamMedis();
+      alert('✅ Kode ICD telah diverifikasi.');
+    }
+
+    function logout() {
+      localStorage.removeItem('simrsRole');
+      window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRekamMedis);
+  </script>
+<script src="common.js"></script>
+</body>
+</html>

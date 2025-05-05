@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIMRS Care – Input Diagnosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<style>body { font-family: 'Poppins', sans-serif; }</style>
+<script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'id', includedLanguages: 'en,id'}, 'google_translate_element');
+        }
+        </script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></head>
+<body class="bg-gray-100"><div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+<nav class="bg-blue-600 p-4">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex items-center gap-6">
+<div class="text-white text-2xl font-bold">SIMRS Care</div>
+<div class="flex gap-4 ml-8">
+<a class="text-white hover:underline" href="dokter.html">Dokter</a>
+<a class="text-white underline font-semibold" href="input-diagnosa.html">Input Diagnosa</a>
+</div>
+</div>
+<div class="flex gap-4 items-center">
+<div class="text-white" id="userRole"></div>
+<button class="text-white underline" onclick="logout()">Logout</button>
+</div>
+</div>
+</nav>
+<div class="p-6">
+<h2 class="text-xl font-semibold mb-4">Input Diagnosa Pasien</h2>
+<div class="bg-white p-6 rounded-xl shadow-md max-w-xl">
+<form class="space-y-4" id="formDiagnosa">
+<input class="w-full border px-3 py-2 rounded" id="nama" placeholder="Nama Pasien" required="" type="text"/>
+<input class="w-full border px-3 py-2 rounded" id="nik" placeholder="NIK / No. RM" required="" type="text"/>
+<input class="w-full border px-3 py-2 rounded" id="tanggal" required="" type="date"/>
+<textarea class="w-full border px-3 py-2 rounded" id="diagnosa" placeholder="Catatan Diagnosa" required=""></textarea>
+<input class="w-full border px-3 py-2 rounded" id="resep" placeholder="Resep Obat" type="text"/>
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2" type="reset">Batal</button>
+<button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Simpan Diagnosa</button>
+</div>
+</form>
+</div>
+</div>
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="slipDiagnosa">
+<div class="bg-white w-[400px] p-6 rounded-xl text-sm">
+<h3 class="text-lg font-bold mb-2">Slip Hasil Pemeriksaan</h3>
+<div class="space-y-1" id="outputDiagnosa"></div>
+<div class="mt-4 flex justify-end">
+<button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="tutupSlup()">Selesai</button>
+</div>
+</div>
+</div>
+<script>
+    const form = document.getElementById('formDiagnosa');
+    const output = document.getElementById('outputDiagnosa');
+    const slip = document.getElementById('slipDiagnosa');
+
+      form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const nama = document.getElementById('nama').value;
+    const nik = document.getElementById('nik').value;
+    const tanggal = document.getElementById('tanggal').value;
+    const diagnosa = document.getElementById('diagnosa').value;
+    const resep = document.getElementById('resep').value;
+
+    const diagnosaBaru = {
+      nama,
+      nik,
+      tanggal,
+      diagnosa,
+      resep: resep || '-',
+      status: 'Terkonfirmasi'
+    };
+
+    const list = JSON.parse(localStorage.getItem('rekamMedisList') || '[]');
+    list.push(diagnosaBaru);
+    localStorage.setItem('rekamMedisList', JSON.stringify(list));
+
+    // Kirim resep ke farmasi (jika ada)
+    if (resep) {
+      kirimResepKeFarmasi(nama, resep);
+      kirimResepKeFarmasiAdmin(nama, resep);
+    }
+
+    output.innerHTML = `
+      <p><strong>Nama:</strong> ${nama}</p>
+      <p><strong>NIK / No. RM:</strong> ${nik}</p>
+      <p><strong>Tanggal:</strong> ${tanggal}</p>
+      <p><strong>Diagnosa:</strong> ${diagnosa}</p>
+      <p><strong>Resep:</strong> ${resep || '-'}</p>
+      <p><strong>Status:</strong> Telah dikonfirmasi dan siap ditindaklanjuti</p>
+    `;
+    slip.classList.remove('hidden');
+  });
+
+
+    function tutupSlup() {
+      slip.classList.add('hidden');
+      form.reset();
+    }
+
+    function logout() {
+      localStorage.removeItem('simrsRole');
+      window.location.href = 'index.html';
+    }
+
+    function kirimResepKeFarmasi(pasien, obat) {
+      const resepList = JSON.parse(localStorage.getItem('resepListFarmasi') || '[]');
+      resepList.push({ pasien, obat, status: 'Menunggu', id: Date.now() });
+      localStorage.setItem('resepListFarmasi', JSON.stringify(resepList));
+    }
+
+    function kirimResepKeFarmasiAdmin(pasien, obat) {
+      const resepList = JSON.parse(localStorage.getItem('resepListAdmin') || '[]');
+      resepList.push({ pasien, obat, status: 'Menunggu', id: Date.now() });
+      localStorage.setItem('resepListAdmin', JSON.stringify(resepList));
+    }
+
+  </script>
+<script src="common.js"></script>
+</body>
+</html>
